@@ -8,6 +8,7 @@ import Navbar from "./components/Navbar";
 import Grid from "@mui/material/Grid";
 import Badge from "@mui/material/Badge";
 import { Drawer } from "@mui/material";
+import Cart from "./cart/Cart";
 
 //styled components
 import { Wrapper } from "./App.styles";
@@ -32,23 +33,54 @@ function App() {
   const [cartItems, setCartItems] = useState([] as cartItemsType[]);
   const { data } = useQuery<cartItemsType[]>("products", getProducts);
 
-  console.log(data);
-
   //functions handling the app's behavior
 
   //get total items in the cart
-  const getTotalItems = (items: cartItemsType[]) => null;
+  const getTotalItems = (items: cartItemsType[]) => {
+    return items.reduce((ack: number, item) => ack + item.amount, 0);
+  };
 
   //adding items to the cart
-  const addItems = (addedItem: cartItemsType) => null;
+  const addItems = (addedItem: cartItemsType) => {
+    //checking if the item is already in our cart
+    setCartItems((items) => {
+      // 1. Is the item already added in the cart?
+      const isItemInCart = items.find((item) => item.id === addedItem.id);
+
+      if (isItemInCart) {
+        return items.map((item) =>
+          item.id === addedItem.id
+            ? { ...item, amount: item.amount + 1 }
+            : item
+        );
+      }
+      // First time the item is added
+      return [...items, { ...addedItem, amount: 1 }];
+    });
+  };
 
   //removing items from the cart
-  const removeItems = () => null;
+  const removeItems = (id: number) => {
+   setCartItems((items) =>
+     items.reduce((ack, item) => {
+       if (item.id === id) {
+         if (item.amount === 1) return ack;
+         return [...ack, { ...item, amount: item.amount - 1 }];
+       } else {
+         return [...ack, item];
+       }
+     }, [] as cartItemsType[])
+   );
+  };
 
   return (
     <Wrapper>
       <Drawer anchor="right" open={openCart} onClose={() => setOpenCart(false)}>
-        here are the cart items
+        <Cart
+          cartItems={cartItems}
+          addItems={addItems}
+          removeItems={removeItems}
+        />
       </Drawer>
       <button
         className="cart-icon fixed z-[100] right-5 top-5 text-2xl"
