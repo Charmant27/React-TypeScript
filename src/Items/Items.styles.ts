@@ -6,6 +6,9 @@ export const Wrapper = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
+  border-radius:0.5rem;
+  padding: 1.5rem;
+  background-color: #ffffff;
 
   div {
     font-family: roboto, arial, helvetica;
@@ -23,7 +26,9 @@ export const Wrapper = styled.div`
 
   button {
     background-color: #0c4a6e;
-    border-radius: 0.5rem
+    border-radius: 0.5rem;
+    margin-left: 5rem;
+    margin-right: 5rem;
   }
 
   button:hover {
